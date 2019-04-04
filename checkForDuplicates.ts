@@ -1,26 +1,21 @@
-import { stringify } from "querystring";
-
 function check():void {
     let body: any = document.querySelectorAll('body');
     let ids: Array<string> = [];
     let duplicates: Array<Duplicates> = [];
-    let num: number = 0;
 
     cNodes(body, ids, duplicates);
 
-    // console.clear();
-    console.log("%c------------------------", "color: darkred; font-weight: bold;");
-    console.log("%c-= DUPLICATE ID CHECK =-", "color: darkyellow; font-weight: bold;");
-    console.log("%c------------------------", "color: darkred; font-weight: bold;");
+    console.clear();
+    console.log("%c-= DUPLICATE ID CHECK =-", "background-color: darkred; color: white; font-size: 2em; font-weight: bold;");
+    console.log("%cby Nils Kummert", "background-color: darkred; color: white; font-size: 1.1em; font-weight: bold;");
     console.log("");
     if(duplicates.length === 0) {
         console.log("%cNo duplicate ids! Congratulations!", "color: green; font-weight: bold;");
     }
     else{
-        console.log("%cOh no, there are "+ num.toString() +" id duplicates:", "color: red; font-weight: bold;")
+        console.log("%cOh no, there are "+ duplicates.length.toString() +" id duplicates:", "color: red; font-weight: bold;")
         for(let el of duplicates) {
-            num++;
-            console.group("ID: " + "%c" + el.elements[0].id, "color: orange; font-weight: bold;"); 
+            console.groupCollapsed("ID: " + "%c" + el.elements[0].id, "color: orange; font-weight: bold;"); 
             console.group("Elements:")
             for (let i = 0; i < el.elements.length; i++) {
                 console.log(el.elements[i]);
@@ -40,10 +35,15 @@ function cNodes(l: any, ids: Array<string>, duplicates: Array<Duplicates>):void 
             cNodes(el.children, ids, duplicates);
         }
         else{
-            // if(el.id !== "" && ids.includes(el.id)) {
             if(el.id !== "") {
                 if(ids.includes(el.id)){
-                    if(!duplicates.some(duplicateInArray, el.id)){
+                    if(duplicates.length < 1){
+                        let d = new Duplicates(el.id);
+                        document.querySelectorAll("#" + el.id).forEach((el) => {d.push(el)});
+                        duplicates.push(d);
+                    }
+                    else if(duplicateInArray(duplicates, el.id)) {
+                    // else if(duplicates.some(duplicateInArray, el.id)){
                         let d = new Duplicates(el.id);
                         document.querySelectorAll("#" + el.id).forEach((el) => {d.push(el)});
                         duplicates.push(d);
@@ -57,9 +57,13 @@ function cNodes(l: any, ids: Array<string>, duplicates: Array<Duplicates>):void 
     }
 }
 
-function duplicateInArray(el: Duplicates): boolean {
-    console.log("el.id: " + el + " this: " + this);
-    return !(el.id === this);
+function duplicateInArray(duplicates: Array<Duplicates>, id: string): boolean {
+    for(let dup of duplicates) {
+        if(dup.id === id) {
+            return false;
+        }
+    }
+    return true;
 }
 
 class Duplicates {
@@ -76,11 +80,6 @@ class Duplicates {
         this.elements.push(el);
     }
 
-    *[Symbol.iterator](): IterableIterator<any> {
-        for(let el of this.elements) {
-            yield el;
-        }
-    }
 }
 
 check();
