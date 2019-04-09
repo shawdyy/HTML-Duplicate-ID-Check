@@ -6,7 +6,7 @@ function check():void {
     cNodes(body, ids, duplicates);
 
     console.clear();
-    console.log("%c-= DUPLICATE ID CHECK =-", "background-color: darkred; color: white; font-size: 2em; font-weight: bold;");
+    console.log("%c-= Checkyl =-", "background-color: darkred; color: white; font-size: 2em; font-weight: bold;");
     console.log("%cby Nils Kummert", "background-color: darkred; color: white; font-size: 1.1em; font-weight: bold;");
     console.log("");
     if(duplicates.length === 0) {
